@@ -24,7 +24,7 @@ const Navbar = async ({ className = "" }: NavbarProps) => {
           >
             <RocketIcon className="h-5 w-5 text-white" />
             <span className="hidden font-bold sm:inline-block text-white">
-              Lightspeed AI
+            CourseForge AI
             </span>
           </Link>
 
