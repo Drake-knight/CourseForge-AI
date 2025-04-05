@@ -10,8 +10,8 @@ import { Loader2 } from "lucide-react";
 type Props = {
   chapter: Chapter;
   chapterIndex: number;
-  completedChapters: Set<String>;
-  setCompletedChapters: React.Dispatch<React.SetStateAction<Set<String>>>;
+  completedChapters: Set<string>;
+  setCompletedChapters: React.Dispatch<React.SetStateAction<Set<string>>>;
 };
 
 export type ChapterCardHandler = {
@@ -19,7 +19,7 @@ export type ChapterCardHandler = {
 };
 
 const ChapterCard = React.forwardRef<ChapterCardHandler, Props>(
-  ({ chapter, chapterIndex, setCompletedChapters, completedChapters }, ref) => {
+  ({ chapter, setCompletedChapters }, ref) => {
     const [success, setSuccess] = React.useState<boolean | null>(null);
     const mutation = useMutation({
       mutationFn: async () => {
@@ -61,7 +61,7 @@ const ChapterCard = React.forwardRef<ChapterCardHandler, Props>(
           onError: (error) => {
             console.error(error);
             setSuccess(false);
-            toast.error("There was an error loading your chapter"); // updated toast usage
+            toast.error("There was an error loading your chapter"); 
             addChapterIdToSet();
           },
         });
