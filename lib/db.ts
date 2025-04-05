@@ -1,5 +1,5 @@
 /* eslint-disable no-var */
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../prisma/generated/prisma/client";
 import "server-only";
 
 declare global {
