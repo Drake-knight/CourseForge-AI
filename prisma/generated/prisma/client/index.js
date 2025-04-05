@@ -185,7 +185,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\jakha\\Desktop\\Lightspeed-hackathon\\prisma\\generated\\prisma\\client",
+      "value": "/Users/tejaspatil/Desktop/Lightspeed-hackathon/prisma/generated/prisma/client",
       "fromEnvVar": null
     },
     "config": {
@@ -194,12 +194,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "darwin-arm64",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\jakha\\Desktop\\Lightspeed-hackathon\\prisma\\schema.prisma",
+    "sourceFilePath": "/Users/tejaspatil/Desktop/Lightspeed-hackathon/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -213,6 +213,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -223,7 +224,7 @@ const config = {
   },
   "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"generated/prisma/client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Account {\n  id                String  @id @default(cuid())\n  userId            String\n  type              String\n  provider          String\n  providerAccountId String\n  refresh_token     String? @db.Text\n  access_token      String? @db.Text\n  expires_at        Int?\n  token_type        String?\n  scope             String?\n  id_token          String? @db.Text\n  session_state     String?\n  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([provider, providerAccountId])\n  @@index([userId], name: \"account_userId_idx\")\n}\n\nmodel Session {\n  id           String   @id @default(cuid())\n  sessionToken String   @unique\n  userId       String\n  expires      DateTime\n  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@index([userId], name: \"session_userId_idx\")\n}\n\nmodel User {\n  id            String    @id @default(cuid())\n  name          String?\n  email         String?   @unique\n  emailVerified DateTime?\n  image         String?\n\n  accounts Account[]\n  sessions Session[]\n}\n\nmodel Course {\n  id    String @id @default(cuid())\n  name  String\n  image String\n  units Unit[]\n}\n\nmodel Unit {\n  id       String @id @default(cuid())\n  courseId String\n\n  name     String\n  course   Course    @relation(fields: [courseId], references: [id])\n  chapters Chapter[]\n\n  @@index([courseId], name: \"courseId\")\n}\n\nmodel Chapter {\n  id     String @id @default(cuid())\n  unitId String\n\n  name               String\n  youtubeSearchQuery String\n  videoId            String?\n  summary            String?    @db.VarChar(3000)\n  unit               Unit       @relation(fields: [unitId], references: [id])\n  questions          Question[]\n\n  @@index([unitId], name: \"unitId\")\n}\n\nmodel Question {\n  id        String @id @default(cuid())\n  chapterId String\n\n  question String  @db.VarChar(3000)\n  answer   String  @db.VarChar(3000)\n  options  String  @db.VarChar(3000)\n  chapter  Chapter @relation(fields: [chapterId], references: [id])\n\n  @@index([chapterId], name: \"chapterId\")\n}\n",
   "inlineSchemaHash": "6c026c3217e6c669fd98307b2723eb1f5884cdda65792c6dc878e50428f5c3a5",
-  "copyEngine": false
+  "copyEngine": true
 }
 
 const fs = require('fs')
@@ -260,3 +261,9 @@ const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
+path.join(process.cwd(), "prisma/generated/prisma/client/libquery_engine-darwin-arm64.dylib.node")
+// file annotations for bundling tools to include these files
+path.join(__dirname, "schema.prisma");
+path.join(process.cwd(), "prisma/generated/prisma/client/schema.prisma")
