@@ -23,7 +23,6 @@ export async function searchYoutube(searchQuery: string, maxResults: number = 5)
       return [];
     }
 
-    // Return an array of video IDs
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return response.data.items.map((item: any) => item.id.videoId);
   } catch (error) {
