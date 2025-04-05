@@ -12,8 +12,8 @@ import {
 import { Button } from "./ui/button";
 import { User } from "next-auth";
 import { signOut } from "next-auth/react";
-import {  LogOut, Settings, User as UserIcon } from "lucide-react";
-import Link from "next/link";
+import {  LogOut  } from "lucide-react";
+
 
 interface UserDropdownProps {
   user: User;
@@ -46,20 +46,8 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
         
         <DropdownMenuSeparator />
         
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard" className="flex items-center w-full cursor-pointer">
-            <UserIcon className="w-4 h-4 mr-2" />
-            Dashboard
-          </Link>
-        </DropdownMenuItem>
-        
-        <DropdownMenuItem asChild>
-          <Link href="/settings" className="flex items-center w-full cursor-pointer">
-            <Settings className="w-4 h-4 mr-2" />
-            Settings
-          </Link>
-        </DropdownMenuItem>
 
+        
         
         <DropdownMenuSeparator />
         

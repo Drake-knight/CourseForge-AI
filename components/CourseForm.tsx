@@ -44,7 +44,7 @@ const CourseForm = () => {
     }
     createChapters(data, {
       onSuccess: (response) => {
-        console.log("API Response:", response);
+
 
         if (!response.data.courseId) {
           console.error("No course_id in response:", response);
@@ -53,11 +53,10 @@ const CourseForm = () => {
         }
         
         toast.success("Course created successfully");
-        console.log("Navigating to:", `/create/${response.data.courseId}`);
+
         router.push(`/create/${response.data.courseId}`);
       },
-      onError: (error) => {
-        console.error("API Error:", error);
+      onError: () => {
         toast.error("Something went wrong");  
       },
     });

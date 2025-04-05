@@ -26,7 +26,7 @@ const SignInButton: React.FC<ButtonProps> = ({
   const handleSignIn = async () => {
     try {
       setIsLoading(true);
-      await signIn("google", { callbackUrl: "/dashboard" });
+      await signIn("google", { callbackUrl: "/create" });
     } catch (error) {
       console.error("Error signing in:", error);
     } finally {
