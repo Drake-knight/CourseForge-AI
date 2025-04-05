@@ -109,7 +109,6 @@ ANY DEVIATION FROM THESE INSTRUCTIONS WILL RESULT IN FAILURE.`;
         .replace(/^json$/gim, '')
         .trim();
       
-      // Fix common JSON formatting issues
       const firstBracketIndex = Math.min(
         responseText.indexOf('{') >= 0 ? responseText.indexOf('{') : Infinity,
         responseText.indexOf('[') >= 0 ? responseText.indexOf('[') : Infinity
@@ -132,7 +131,6 @@ ANY DEVIATION FROM THESE INSTRUCTIONS WILL RESULT IN FAILURE.`;
         throw new Error("Response is not valid JSON format");
       }
 
-      // Parse the JSON
       let output = JSON.parse(responseText);
       
       if (list_input) {
