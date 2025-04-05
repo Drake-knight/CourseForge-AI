@@ -2,10 +2,10 @@ import { getCurrentUserSession } from "../../lib/auth";
 import React from "react";
 import { redirect } from "next/navigation";
 import { InfoIcon } from "lucide-react";
+import CreateCourseForm from "@/components/CreateCourseForm";
 
-type Props = {};
 
-const CreatePage = async (props: Props) => {
+const CreatePage = async () => {
   const session = await getCurrentUserSession();
   if (!session?.user) {
     return redirect("/gallery");
@@ -21,6 +21,7 @@ const CreatePage = async (props: Props) => {
         Got something you want to learn? Type in a course title and list the units you’re curious about — our AI will whip up a course just for you!
         </div>
       </div>
+      <CreateCourseForm/>
     </div>
   );
 };

@@ -11,7 +11,15 @@ type Props = {
   };
 };
 
-const CreateChapters = async ({ params: { courseId } }: Props) => {
+const CreateChapters = async (props: Props) => {
+  // Await the params object
+  const params = await props.params;
+  console.log(22, params);
+  
+  // Now access courseId
+  const courseId = params.courseId;
+  console.log(22, courseId);
+  
   const session = await getCurrentUserSession();
   if (!session?.user) {
     return redirect("/gallery");
@@ -31,6 +39,7 @@ const CreateChapters = async ({ params: { courseId } }: Props) => {
   if (!course) {
     return redirect("/create");
   }
+  
   return (
     <div className="flex flex-col items-start max-w-xl mx-auto my-16">
       <h5 className="text-sm uppercase text-seconday-foreground/60">
@@ -41,7 +50,7 @@ const CreateChapters = async ({ params: { courseId } }: Props) => {
       <div className="flex p-4 mt-5 border-none bg-secondary">
         <Info className="w-12 h-12 mr-3 text-blue-400" />
         <div>
-        Chapters for all units have been successfully generated. Kindly review them and proceed by clicking the confirmation button
+          Chapters for all units have been successfully generated. Kindly review them and proceed by clicking the confirmation button
         </div>
       </div>
       <ConfirmChapters course={course} />

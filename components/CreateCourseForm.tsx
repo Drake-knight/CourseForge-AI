@@ -15,15 +15,14 @@ import axios from "axios";
 import { toast } from "react-hot-toast"; 
 import { useRouter } from "next/navigation";
 
-type Props = { isPro: boolean };
 
 type Input = z.infer<typeof createChaptersSchema>;
 
-const CreateCourseForm = ({ isPro }: Props) => {
+const CreateCourseForm = () => {
   const router = useRouter();
   const { mutate: createChapters, status } = useMutation({
     mutationFn: async ({ title, units }: Input) => {
-      const response = await axios.post("/api/course/createChapters", {
+      const response = await axios.post("/api/course", {
         title,
         units,
       });
@@ -44,12 +43,21 @@ const CreateCourseForm = ({ isPro }: Props) => {
       return;
     }
     createChapters(data, {
-      onSuccess: ({ course_id }) => {
+      onSuccess: (response) => {
+        console.log("API Response:", response);
+
+        if (!response.course_id) {
+          console.error("No course_id in response:", response);
+          toast.error("Missing course ID in response");
+          return;
+        }
+        
         toast.success("Course created successfully");
-        router.push(`/create/${course_id}`);
+        console.log("Navigating to:", `/create/${response.course_id}`);
+        router.push(`/create/${response.course_id}`);
       },
       onError: (error) => {
-        console.error(error);
+        console.error("API Error:", error);
         toast.error("Something went wrong");
       },
     });
