@@ -147,6 +147,35 @@ exports.Prisma.UserScalarFieldEnum = {
   image: 'image'
 };
 
+exports.Prisma.CourseScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  image: 'image'
+};
+
+exports.Prisma.UnitScalarFieldEnum = {
+  id: 'id',
+  courseId: 'courseId',
+  name: 'name'
+};
+
+exports.Prisma.ChapterScalarFieldEnum = {
+  id: 'id',
+  unitId: 'unitId',
+  name: 'name',
+  youtubeSearchQuery: 'youtubeSearchQuery',
+  videoId: 'videoId',
+  summary: 'summary'
+};
+
+exports.Prisma.QuestionScalarFieldEnum = {
+  id: 'id',
+  chapterId: 'chapterId',
+  question: 'question',
+  answer: 'answer',
+  options: 'options'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -166,7 +195,11 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Account: 'Account',
   Session: 'Session',
-  User: 'User'
+  User: 'User',
+  Course: 'Course',
+  Unit: 'Unit',
+  Chapter: 'Chapter',
+  Question: 'Question'
 };
 
 /**
