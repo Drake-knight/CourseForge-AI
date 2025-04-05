@@ -1,6 +1,5 @@
 import CourseSideBar from "../../../components/CourseSidebar";
 import MainVideoSummary from "@/components/MainVideoSummary";
-import QuizCards from "@/components/QuizCards";
 import { prisma } from "@/lib/db";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -55,7 +54,6 @@ const CoursePage = async ({ params: { slug } }: Props) => {
               unit={unit}
               unitIndex={unitIndex}
             />
-            <QuizCards chapter={chapter} />
           </div>
 
           <div className="flex-[1] h-[1px] mt-4 text-gray-500 bg-gray-500" />

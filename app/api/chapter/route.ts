@@ -2,7 +2,6 @@
 import { prisma } from "@/lib/db";
 import { strict_output } from "@/lib/gemini";
 import {
-  getQuestionsFromTranscript,
   getTranscript,
   searchYoutube,
 } from "@/lib/yt";
@@ -81,51 +80,19 @@ export async function POST(req: Request) {
       { summary: "educational summary of the content" }
     );
     
-    const questions = await getQuestionsFromTranscript(
-      transcript,
-      chapter.name
-    );
-    
-    if (questions.length === 0) {
-      return NextResponse.json({
-        success: false,
-        error: "Failed to generate quiz questions"
-      }, { status: 422 });
-    }
-
-    await prisma.$transaction([
-      prisma.question.createMany({
-        data: questions.map((question) => {
-          const options = [
-            question.answer,
-            question.option1,
-            question.option2,
-            question.option3,
-          ].sort(() => Math.random() - 0.5);
-          
-          return {
-            question: question.question,
-            answer: question.answer,
-            options: JSON.stringify(options),
-            chapterId: chapterId,
-          };
-        }),
-      }),
-      
-      prisma.chapter.update({
-        where: { id: chapterId },
-        data: {
-          videoId,
-          summary,
-        },
-      }),
-    ]);
+    // Update the chapter with video ID and summary only
+    await prisma.chapter.update({
+      where: { id: chapterId },
+      data: {
+        videoId,
+        summary,
+      },
+    });
 
     return NextResponse.json({ 
       success: true,
       data: {
         videoId,
-        questionsCount: questions.length,
         summaryLength: summary.length,
       }
     });
