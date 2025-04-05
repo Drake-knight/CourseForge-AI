@@ -12,7 +12,8 @@ type Props = {
   };
 };
 
-const CoursePage = async ({ params: { slug } }: Props) => {
+const CoursePage = async ({ params }: Props) => {
+  const slug = await params.slug;
   const [courseId, unitIndexParam, chapterIndexParam] = slug;
   const course = await prisma.course.findUnique({
     where: { id: courseId },

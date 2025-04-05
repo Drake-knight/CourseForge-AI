@@ -12,11 +12,7 @@ type Props = {
 };
 
 const CreateChapters = async (props: Props) => {
-  // Await the params object
   const params = await props.params;
-  console.log(22, params);
-  
-  // Now access courseId
   const courseId = params.courseId;
   console.log(22, courseId);
   

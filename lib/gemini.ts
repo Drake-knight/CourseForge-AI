@@ -6,7 +6,7 @@ interface OutputFormat {
   [key: string]: string | string[] | OutputFormat;
 }
 
-export async function strict_output(
+export async function refined_output(
   system_prompt: string,
   user_prompt: string | string[],
   output_format: OutputFormat,
@@ -43,24 +43,40 @@ export async function strict_output(
         1. Output ONLY raw JSON with no additional text
         2. Do not include markdown code blocks, backticks, or "json" labels
         3. Ensure all keys match exactly as specified
-        4. Ensure all values are properly formatted strings or arrays`;
+        4. Ensure all values are properly formatted strings or arrays
+        5. CRITICAL: NEVER put quotes inside JSON string values without escaping them with a backslash (\\")
+        6. Avoid using any quotation marks inside text values at any cost
+        7. If you must include quotes in text, ALWAYS use \\" instead of plain "`;
+      
 
       if (list_output) {
-        output_format_prompt += `\n5. If an output field is a list, choose the single best element from that list`;
+        output_format_prompt += `\n7. If an output field is a list, choose the single best element from that list`;
       }
 
       if (dynamic_elements) {
-        output_format_prompt += `\n6. For any text enclosed by < and >, generate appropriate content to replace it
-7. For any output key containing < and >, generate an appropriate key name to replace it`;
+        output_format_prompt += `\n8. For any text enclosed by < and >, generate appropriate content to replace it
+9. For any output key containing < and >, generate an appropriate key name to replace it`;
       }
 
       if (list_input) {
-        output_format_prompt += `\n8. Return an array of JSON objects, one for each input element
-9. Each JSON object must strictly follow the specified format`;
+        output_format_prompt += `\n10. Return an array of JSON objects, one for each input element
+11. Each JSON object must strictly follow the specified format`;
       }
 
       output_format_prompt += `\n\nEXAMPLE OF CORRECT RESPONSE FORMAT:
 ${list_input ? '[' : ''}${JSON.stringify(output_format, null, 2)}${list_input ? ']' : ''}
+
+EXAMPLES OF CORRECT QUOTE HANDLING:
+{"text": "He said, \\"This is important\\" and I agreed."}
+{"text": "The phrase commonly referred to as \\\"Hello World\\\" is often used as a first program."}
+{"text": "Avoid using quotation marks entirely when possible."}
+
+BAD EXAMPLES (DO NOT DO THIS):
+{"text": "He said "This is important" and I agreed."} // Unescaped quotes break JSON
+{"text": "The term "variable" refers to a named storage location."} // Quotes must be escaped
+{"text": "The phrase commonly referred to as "Hello-World" is often used as a first program."} // Quotes must be escaped
+{"text": "The phrase commonly referred to as (eg: "Hello-World") is often used as a first program."} // Quotes must be escaped
+{"text": "The phrase commonly referred to as "Hello-World" is often used as a first program."} // Quotes must be escaped
 
 ANY DEVIATION FROM THESE INSTRUCTIONS WILL RESULT IN FAILURE.`;
 
@@ -162,7 +178,7 @@ ANY DEVIATION FROM THESE INSTRUCTIONS WILL RESULT IN FAILURE.`;
       return list_input ? output : output[0];
       
     } catch (e) {
-      error_msg = `\n\nPrevious attempt failed with error: ${e}\nPlease ensure your response is ONLY valid JSON matching the required format exactly. No explanations, no markdown.`;
+      error_msg = `\n\nPrevious attempt failed with error: ${e}\nPlease ensure your response is ONLY valid JSON matching the required format exactly. No explanations, no markdown. REMEMBER: Always escape quotes inside strings with a backslash: \\".`;
       console.log("Attempt failed:", e);
       
       if (i === num_tries - 1) {
