@@ -6,8 +6,8 @@ export default function Home() {
     <div className="relative min-h-screen pt-32 pb-0 sm:pt-40">
       {/* Enhanced Gradient Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 via-purple-800/20 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-purple-600/30 via-purple-900/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900 via-purple-800 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-purple-600 via-purple-900 to-transparent" />
         <div className="absolute inset-0 bg-[conic-gradient(from_90deg_at_50%_0%,_#3b0764,_#0c0a09_25%,_#0c0a09_75%,_#3b0764_100%)] opacity-50" />
       </div>
 
