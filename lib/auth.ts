@@ -37,14 +37,13 @@ export const authConfig: NextAuthOptions = {
     jwt: async ({ token }): Promise<JWT> => {
       const userRecord = await prisma.user.findUnique({
         where: { email: token.email || "" },
-        select: { id: true, credits: true },
+        select: { id: true },
       });
       
       if (userRecord) {
         return {
           ...token,
           userId: userRecord.id,
-          creditBalance: userRecord.credits,
         };
       }
       
@@ -59,7 +58,6 @@ export const authConfig: NextAuthOptions = {
         name: token.name,
         email: token.email,
         image: token.picture,
-        creditBalance: token.creditBalance,
       },
     }),
   },
