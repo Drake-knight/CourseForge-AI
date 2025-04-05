@@ -9,6 +9,7 @@ interface NavbarProps {
     className?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Navbar = async ({ className = "" }: NavbarProps) => {
     const session = await getCurrentUserSession();
     const isAuthenticated = !!session?.user;
