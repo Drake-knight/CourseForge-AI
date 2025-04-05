@@ -30,7 +30,6 @@ export class RequestQueue {
   
   constructor() {
     this.intervalId = setInterval(() => {
-      console.log(`Rate limit reset. Processed ${this.requestsThisMinute} requests in the last minute.`);
       this.requestsThisMinute = 0;
       this.lastResetTime = Date.now();
       
@@ -52,8 +51,7 @@ export class RequestQueue {
     verbose: boolean = false,
     isChapterApiRequest: boolean = false
   ): Promise<any> {
-    console.log(`Enqueueing new request. Current queue length: ${this.queue.length}`);
-    
+
     return new Promise((resolve, reject) => {
       this.queue.push({
         systemPrompt,
@@ -71,7 +69,6 @@ export class RequestQueue {
       });
       
       if (!this.processing) {
-        console.log("Starting queue processing");
         this.processQueue();
       }
     });
@@ -79,7 +76,6 @@ export class RequestQueue {
 
   private async processQueue(): Promise<void> {
     if (this.queue.length === 0) {
-      console.log("Queue is empty, stopping processing");
       this.processing = false;
       return;
     }
@@ -89,19 +85,16 @@ export class RequestQueue {
     const waitTime = this.calculateWaitTime();
     
     if (waitTime > 0) {
-      console.log(`Waiting ${waitTime}ms before next request.`);
       await new Promise(resolve => setTimeout(resolve, waitTime));
     }
 
     const request = this.queue.shift();
     if (!request) {
-      console.log("No request found in queue, continuing");
       setTimeout(() => this.processQueue(), 0);
       return;
     }
 
     try {
-      console.log(`Processing request. Queue length: ${this.queue.length}`);
       this.requestsThisMinute++;
       this.lastRequestTime = Date.now();
       
@@ -117,7 +110,7 @@ export class RequestQueue {
         request.verbose || false,
       );
       
-      console.log("Request processed successfully");
+
       request.resolve(result);
     } catch (error) {
       console.error("Error processing request:", error);

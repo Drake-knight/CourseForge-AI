@@ -49,18 +49,15 @@ export async function POST(req: Request) {
     
     for (let i = 0; i < videoIds.length; i++) {
       const currentVideoId = videoIds[i];
-      console.log(`Attempting video ${i+1}/${videoIds.length}, ID: ${currentVideoId}`);
       
       try {
         const currentTranscript = await getTranscript(currentVideoId);
         if (currentTranscript && currentTranscript.length > 100) { 
           transcript = currentTranscript;
           videoId = currentVideoId;
-          console.log(`Found valid transcript for video ID: ${videoId}`);
           break;
         }
       } catch (e) {
-        console.log(`No transcript available for video ${currentVideoId}, trying next...`);
       }
     }
 
@@ -108,7 +105,7 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
     
-    console.error("Chapter processing error:", error);
+
     
     return NextResponse.json({
       success: false,

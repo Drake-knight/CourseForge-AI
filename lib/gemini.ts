@@ -122,10 +122,7 @@ ANY DEVIATION FROM THESE INSTRUCTIONS WILL RESULT IN FAILURE.`;
       if (firstBracketIndex !== Infinity && lastBracketIndex !== -1) {
         responseText = responseText.substring(firstBracketIndex, lastBracketIndex + 1);
       }
-      
-      if (verbose) {
-        console.log("\nGemini response:", responseText);
-      }
+
 
       if (!responseText.startsWith('{') && !responseText.startsWith('[')) {
         throw new Error("Response is not valid JSON format");

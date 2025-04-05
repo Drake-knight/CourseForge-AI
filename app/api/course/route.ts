@@ -52,7 +52,6 @@ export async function POST(req: Request) {
       imageResponse.image_search_term
     );
 
-    console.log(33,courseImage)
     
     const result = await prisma.$transaction(async (tx) => {
 
@@ -105,7 +104,6 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
     
-    console.error("Course creation error:", error);
     
     return NextResponse.json({
       success: false,

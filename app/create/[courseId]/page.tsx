@@ -14,7 +14,6 @@ type Props = {
 const CreateChapters = async (props: Props) => {
   const params = await props.params;
   const courseId = params.courseId;
-  console.log(22, courseId);
   
   const session = await getCurrentUserSession();
   if (!session?.user) {
