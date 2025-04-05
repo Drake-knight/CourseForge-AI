@@ -18,9 +18,7 @@ const CreatePage = async (props: Props) => {
       <div className="flex p-4 mt-5 border-none bg-secondary">
         <InfoIcon className="w-12 h-12 mr-3 text-blue-400" />
         <div>
-          Enter in a course title, or what you want to learn about. Then enter a
-          list of units, which are the specifics you want to learn. And our AI
-          will generate a course for you!
+        Got something you want to learn? Type in a course title and list the units you’re curious about — our AI will whip up a course just for you!
         </div>
       </div>
     </div>
