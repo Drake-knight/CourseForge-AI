@@ -1,7 +1,7 @@
 "use client";
 import { Chapter, Course, Unit } from "../prisma/generated/prisma/client";
 import React from "react";
-import ChapterCard, { ChapterCardHandler } from "./ChapterCard";
+import ChapCard, { ChapCardHandler } from "./ChapCard";
 import { Separator } from "./ui/separator";
 import Link from "next/link";
 import { Button, buttonVariants } from "./ui/button";
@@ -15,13 +15,13 @@ type Props = {
   };
 };
 
-const ConfirmChapters = ({ course }: Props) => {
+const GenVid = ({ course }: Props) => {
   const [loading, setLoading] = React.useState(false);
-  const chapterRefs: Record<string, React.RefObject<ChapterCardHandler | null>> = {};
+  const chapterRefs: Record<string, React.RefObject<ChapCardHandler | null>> = {};
   course.units.forEach((unit) => {
     unit.chapters.forEach((chapter) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
-      chapterRefs[chapter.id] = React.useRef<ChapterCardHandler | null>(null);
+      chapterRefs[chapter.id] = React.useRef<ChapCardHandler | null>(null);
     });
   });
   const [completedChapters, setCompletedChapters] = React.useState<Set<string>>(
@@ -45,7 +45,7 @@ const ConfirmChapters = ({ course }: Props) => {
             <div className="mt-3">
               {unit.chapters.map((chapter, chapterIndex) => {
                 return (
-                  <ChapterCard
+                  <ChapCard
                     completedChapters={completedChapters}
                     setCompletedChapters={setCompletedChapters}
                     ref={chapterRefs[chapter.id]}
@@ -104,4 +104,4 @@ const ConfirmChapters = ({ course }: Props) => {
   );
 };
 
-export default ConfirmChapters;
+export default GenVid;

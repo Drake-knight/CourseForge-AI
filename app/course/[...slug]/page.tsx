@@ -1,5 +1,5 @@
-import CourseSideBar from "../../../components/CourseSidebar";
-import MainVideoSummary from "@/components/MainVideoSummary";
+import Sidebar from "../../../components/Sidebar";
+import Video from "@/components/Video";
 import { prisma } from "@/lib/db";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -12,8 +12,9 @@ type Props = {
   };
 };
 
-const CoursePage = async ({ params }: Props) => {
-  const slug = await params.slug;
+const CoursePage = async (props: Props) => {
+  const params = await props.params;
+  const slug = params.slug;
   const [courseId, unitIndexParam, chapterIndexParam] = slug;
   const course = await prisma.course.findUnique({
     where: { id: courseId },
@@ -45,11 +46,11 @@ const CoursePage = async ({ params }: Props) => {
   const prevChapter = unit.chapters[chapterIndex - 1];
   return (
     <div>
-      <CourseSideBar course={course} currentChapterId={chapter.id} />;
+      <Sidebar course={course} currentChapterId={chapter.id} />;
       <div>
         <div className="ml-[400px] px-8">
           <div className="flex">
-            <MainVideoSummary
+            <Video
               chapter={chapter}
               chapterIndex={chapterIndex}
               unit={unit}

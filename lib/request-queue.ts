@@ -1,5 +1,4 @@
-//to prevent rate limit of gemini(wont be usedful when we got cred in api)
-
+//to prevent rate limit of gemini(wont be useful when we got cred in api)
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { refined_output } from './gemini';
@@ -24,11 +23,12 @@ export class RequestQueue {
   private processing: boolean = false;
   private requestsThisMinute: number = 0;
   private lastResetTime: number = Date.now();
+  private lastRequestTime: number = 0;
   private readonly rateLimit: number = 20; 
+  private readonly requestDelay: number = 10000; // 10 sec
   private intervalId: NodeJS.Timeout;
   
   constructor() {
-
     this.intervalId = setInterval(() => {
       console.log(`Rate limit reset. Processed ${this.requestsThisMinute} requests in the last minute.`);
       this.requestsThisMinute = 0;
@@ -86,11 +86,11 @@ export class RequestQueue {
 
     this.processing = true;
 
-    const timeUntilNextRequest = this.calculateWaitTime();
+    const waitTime = this.calculateWaitTime();
     
-    if (timeUntilNextRequest > 0) {
-      console.log(`Rate limit reached. Waiting ${timeUntilNextRequest}ms before next request.`);
-      await new Promise(resolve => setTimeout(resolve, timeUntilNextRequest));
+    if (waitTime > 0) {
+      console.log(`Waiting ${waitTime}ms before next request.`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
     }
 
     const request = this.queue.shift();
@@ -103,6 +103,7 @@ export class RequestQueue {
     try {
       console.log(`Processing request. Queue length: ${this.queue.length}`);
       this.requestsThisMinute++;
+      this.lastRequestTime = Date.now();
       
       const result = await refined_output(
         request.systemPrompt,
@@ -127,14 +128,19 @@ export class RequestQueue {
   }
 
   private calculateWaitTime(): number {
-    if (this.requestsThisMinute < this.rateLimit) {
-      return 0;
-    }
-
-    const elapsedTime = Date.now() - this.lastResetTime;
-    const timeUntilReset = Math.max(0, 60 * 1000 - elapsedTime);
+    const now = Date.now();
     
-    return timeUntilReset;
+    const timeSinceLastRequest = now - this.lastRequestTime;
+    const timeNeededForDelay = Math.max(0, this.requestDelay - timeSinceLastRequest);
+    
+    let timeNeededForRateLimit = 0;
+    if (this.requestsThisMinute >= this.rateLimit) {
+      const elapsedTime = now - this.lastResetTime;
+      timeNeededForRateLimit = Math.max(0, 60 * 1000 - elapsedTime);
+    }
+    
+
+    return Math.max(timeNeededForDelay, timeNeededForRateLimit);
   }
 
   public getStatus(): { queueLength: number, requestsThisMinute: number, isProcessing: boolean } {

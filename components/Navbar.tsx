@@ -45,12 +45,6 @@ const Navbar = async ({ className = "" }: NavbarProps) => {
                   >
                     Create
                   </Link>
-                  <Link 
-                    href="/settings" 
-                    className="font-medium bg-white text-black px-2 py-1 rounded-md transition-colors hover:bg-purple-600 hover:text-black"
-                  >
-                    Settings
-                  </Link>
                 </>
               )}
             </div>

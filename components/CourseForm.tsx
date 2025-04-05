@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
+import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { z } from "zod";
 import { createChaptersSchema } from '../util/course';
 import { useForm } from "react-hook-form";
@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 
 type Input = z.infer<typeof createChaptersSchema>;
 
-const CreateCourseForm = () => {
+const CourseForm = () => {
   const router = useRouter();
   const { mutate: createChapters, status } = useMutation({
     mutationFn: async ({ title, units }: Input) => {
@@ -172,4 +172,4 @@ const CreateCourseForm = () => {
   );
 };
 
-export default CreateCourseForm;
+export default CourseForm;

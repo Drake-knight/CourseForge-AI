@@ -2,7 +2,7 @@ import { getCurrentUserSession } from "../../lib/auth";
 import React from "react";
 import { redirect } from "next/navigation";
 import { InfoIcon } from "lucide-react";
-import CreateCourseForm from "@/components/CreateCourseForm";
+import CourseForm from "@/components/CourseForm";
 
 const CreatePage = async () => {
   const session = await getCurrentUserSession();
@@ -22,7 +22,7 @@ const CreatePage = async () => {
           </p>
         </div>
         <div className="w-full mt-10">
-          <CreateCourseForm />
+          <CourseForm />
         </div>
       </div>
     </div>

@@ -14,11 +14,11 @@ type Props = {
   setCompletedChapters: React.Dispatch<React.SetStateAction<Set<string>>>;
 };
 
-export type ChapterCardHandler = {
+export type ChapCardHandler = {
   triggerLoad: () => void;
 };
 
-const ChapterCard = React.forwardRef<ChapterCardHandler, Props>(
+const ChapCard = React.forwardRef<ChapCardHandler, Props>(
   ({ chapter, setCompletedChapters }, ref) => {
     const [success, setSuccess] = React.useState<boolean | null>(null);
     const mutation = useMutation({
@@ -84,6 +84,6 @@ const ChapterCard = React.forwardRef<ChapterCardHandler, Props>(
   }
 );
 
-ChapterCard.displayName = "ChapterCard";
+ChapCard.displayName = "ChapCard";
 
-export default ChapterCard;
+export default ChapCard;

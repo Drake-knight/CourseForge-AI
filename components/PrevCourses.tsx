@@ -11,7 +11,7 @@ type Props = {
   };
 };
 
-const GalleryCourseCard = async ({ course }: Props) => {
+const PrevCourses = async ({ course }: Props) => {
   return (
     <>
       <div className="border rounded-lg border-secondary w-65 h-90  overflow-hidden">
@@ -54,4 +54,4 @@ const GalleryCourseCard = async ({ course }: Props) => {
   );
 };
 
-export default GalleryCourseCard;
+export default PrevCourses;

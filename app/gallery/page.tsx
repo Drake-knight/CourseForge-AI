@@ -1,4 +1,4 @@
-import GalleryCourseCard from "@/components/GalleryCourseCard";
+import PrevCourses from "@/components/PrevCourses";
 import { prisma } from "@/lib/db";
 import React from "react";
 
@@ -18,7 +18,7 @@ const GalleryPage = async () => {
           {courses.map((course) => {
             return (
               <div className="bg-white p-4 rounded-lg shadow-md" key={course.id}>
-                <GalleryCourseCard course={course} />
+                <PrevCourses course={course} />
               </div>
             );
           })}

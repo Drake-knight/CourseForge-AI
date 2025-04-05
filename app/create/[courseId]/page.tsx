@@ -1,4 +1,4 @@
-import ConfirmChapters from "@/components/ConfirmChapters";
+import GenVid from "@/components/GenVid";
 import { getCurrentUserSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { Info } from "lucide-react";
@@ -49,7 +49,7 @@ const CreateChapters = async (props: Props) => {
           Chapters for all units have been successfully generated. Kindly review them and proceed by clicking the confirmation button
         </div>
       </div>
-      <ConfirmChapters course={course} />
+      <GenVid course={course} />
     </div>
   );
 };

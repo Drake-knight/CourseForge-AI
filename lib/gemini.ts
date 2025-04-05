@@ -60,9 +60,14 @@ export async function refined_output(
 
       if (list_input) {
         output_format_prompt += `\n10. Return an array of JSON objects, one for each input element
-11. Each JSON object must strictly follow the specified format`;
+11. Each JSON object must strictly follow the specified format
+12. IMPORTANT: Ensure each output has UNIQUE content based on its specific input
+13. For each different input, generate completely different chapter names, topics, and content
+14. Check that no duplicate names or content exist across the different outputs`;
       }
-
+      output_format_prompt += `\n\nCRITICAL: ABSOLUTELY NEVER USE STRAIGHT QUOTES IN VALUES
+      - Instead of "quoted text" → use 'single quotes' or rephrase without quotes
+      - All double quotes MUST be escaped as \\\"`
       output_format_prompt += `\n\nEXAMPLE OF CORRECT RESPONSE FORMAT:
 ${list_input ? '[' : ''}${JSON.stringify(output_format, null, 2)}${list_input ? ']' : ''}
 

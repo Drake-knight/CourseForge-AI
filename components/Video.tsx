@@ -8,7 +8,7 @@ type Props = {
   chapterIndex: number;
 };
 
-const MainVideoSummary = ({
+const Video = ({
   unitIndex,
   chapter,
   chapterIndex,
@@ -33,4 +33,4 @@ const MainVideoSummary = ({
   );
 };
 
-export default MainVideoSummary;
+export default Video;
