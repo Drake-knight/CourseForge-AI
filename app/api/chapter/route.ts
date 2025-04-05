@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { prisma } from "@/lib/db";
-import { output } from "@/lib/gemini";
-
 
 import { enhanced_output } from "@/lib/enhanced-gemini";
 import {
