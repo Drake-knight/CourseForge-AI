@@ -44,44 +44,46 @@ export async function refined_output(
         2. Do not include markdown code blocks, backticks, or "json" labels
         3. Ensure all keys match exactly as specified
         4. Ensure all values are properly formatted strings or arrays
-        5. CRITICAL: NEVER put quotes inside JSON string values without escaping them with a backslash (\\")
-        6. Avoid using any quotation marks inside text values at any cost
-        7. If you must include quotes in text, ALWAYS use \\" instead of plain "`;
+        5. AVOID using any quotation marks inside text values if possible
+        6. If quotation marks are absolutely necessary, use single quotes (') instead of double quotes
+        7. NEVER use unescaped double quotes inside JSON string values`;
       
 
       if (list_output) {
-        output_format_prompt += `\n7. If an output field is a list, choose the single best element from that list`;
+        output_format_prompt += `\n8. If an output field is a list, choose the single best element from that list`;
       }
 
       if (dynamic_elements) {
-        output_format_prompt += `\n8. For any text enclosed by < and >, generate appropriate content to replace it
-9. For any output key containing < and >, generate an appropriate key name to replace it`;
+        output_format_prompt += `\n9. For any text enclosed by < and >, generate appropriate content to replace it
+10. For any output key containing < and >, generate an appropriate key name to replace it`;
       }
 
       if (list_input) {
-        output_format_prompt += `\n10. Return an array of JSON objects, one for each input element
-11. Each JSON object must strictly follow the specified format
-12. IMPORTANT: Ensure each output has UNIQUE content based on its specific input
-13. For each different input, generate completely different chapter names, topics, and content
-14. Check that no duplicate names or content exist across the different outputs`;
+        output_format_prompt += `\n11. Return an array of JSON objects, one for each input element
+12. Each JSON object must strictly follow the specified format
+13. IMPORTANT: Ensure each output has UNIQUE content based on its specific input
+14. For each different input, generate completely different chapter names, topics, and content
+15. Check that no duplicate names or content exist across the different outputs`;
       }
-      output_format_prompt += `\n\nCRITICAL: ABSOLUTELY NEVER USE STRAIGHT QUOTES IN VALUES
-      - Instead of "quoted text" → use 'single quotes' or rephrase without quotes
-      - All double quotes MUST be escaped as \\\"`
+      
+      output_format_prompt += `\n\nBEFORE RESPONDING: Carefully review your response and verify that:
+      1. It contains only valid JSON
+      2. There are NO unescaped double quotes in any string values
+      3. If quotes are needed, use single quotes (') instead of double quotes
+      4. The structure exactly matches the required format`;
+      
       output_format_prompt += `\n\nEXAMPLE OF CORRECT RESPONSE FORMAT:
 ${list_input ? '[' : ''}${JSON.stringify(output_format, null, 2)}${list_input ? ']' : ''}
 
-EXAMPLES OF CORRECT QUOTE HANDLING:
-{"text": "He said, \\"This is important\\" and I agreed."}
-{"text": "The phrase commonly referred to as \\\"Hello World\\\" is often used as a first program."}
+EXAMPLES OF CORRECT TEXT HANDLING:
+{"text": "He said, 'This is important' and I agreed."}
+{"text": "The phrase commonly referred to as 'Hello World' is often used as a first program."}
 {"text": "Avoid using quotation marks entirely when possible."}
 
 BAD EXAMPLES (DO NOT DO THIS):
 {"text": "He said "This is important" and I agreed."} // Unescaped quotes break JSON
-{"text": "The term "variable" refers to a named storage location."} // Quotes must be escaped
-{"text": "The phrase commonly referred to as "Hello-World" is often used as a first program."} // Quotes must be escaped
-{"text": "The phrase commonly referred to as (eg: "Hello-World") is often used as a first program."} // Quotes must be escaped
-{"text": "The phrase commonly referred to as "Hello-World" is often used as a first program."} // Quotes must be escaped
+{"text": "The term "variable" refers to a named storage location."} // Quotes break JSON
+{"text": "The phrase commonly referred to as "Hello-World" is often used."} // Quotes break JSON
 
 ANY DEVIATION FROM THESE INSTRUCTIONS WILL RESULT IN FAILURE.`;
 
@@ -105,12 +107,9 @@ ANY DEVIATION FROM THESE INSTRUCTIONS WILL RESULT IN FAILURE.`;
         .replace(/```json/g, '')  
         .replace(/```/g, '')      
         .replace(/^json$/gim, '')
-        .replace(/'/g, '"')       
-        .replace(/(\w)"(\w)/g, "$1'$2")
         .trim();
       
-        
-
+      // Fix common JSON formatting issues
       const firstBracketIndex = Math.min(
         responseText.indexOf('{') >= 0 ? responseText.indexOf('{') : Infinity,
         responseText.indexOf('[') >= 0 ? responseText.indexOf('[') : Infinity
@@ -133,10 +132,8 @@ ANY DEVIATION FROM THESE INSTRUCTIONS WILL RESULT IN FAILURE.`;
         throw new Error("Response is not valid JSON format");
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      console.log(responseText);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let output: any = JSON.parse(responseText);
+      // Parse the JSON
+      let output = JSON.parse(responseText);
       
       if (list_input) {
         if (!Array.isArray(output)) {
@@ -183,7 +180,7 @@ ANY DEVIATION FROM THESE INSTRUCTIONS WILL RESULT IN FAILURE.`;
       return list_input ? output : output[0];
       
     } catch (e) {
-      error_msg = `\n\nPrevious attempt failed with error: ${e}\nPlease ensure your response is ONLY valid JSON matching the required format exactly. No explanations, no markdown. REMEMBER: Always escape quotes inside strings with a backslash: \\".`;
+      error_msg = `\n\nPrevious attempt failed with error: ${e}\nPlease ensure your response is ONLY valid JSON matching the required format exactly. No explanations, no markdown. AVOID using double quotes in text - use single quotes instead if quotes are absolutely necessary.`;
       console.log("Attempt failed:", e);
       
       if (i === num_tries - 1) {
