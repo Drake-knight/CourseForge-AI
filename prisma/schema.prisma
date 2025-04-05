@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -27,7 +27,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-  @@index([userId], name: "userId")
+  @@index([userId], name: "account_userId_idx")
 }
 
 
@@ -38,7 +38,7 @@ model Session {
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId], name: "userId")
+  @@index([userId], name: "session_userId_idx")
 }
 
 
