@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createChaptersSchema } from "@/util/course";
 import { z } from "zod";
-import { strict_output } from "@/lib/gemini";
+import { refined_output } from "@/lib/gemini";
 import { getUnsplashImage } from "@/lib/unsplash";
 import { prisma } from "@/lib/db";
 import { getCurrentUserSession } from "@/lib/auth";
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       chapters: ChapterContent[];
     }
     
-    const outputUnits: UnitContent[] = await strict_output(
+    const outputUnits: UnitContent[] = await refined_output(
       "You are an educational content creator specializing in creating structured learning courses",
       new Array(units.length).fill(
         `Create a detailed unit for a course about "${title}". For each chapter, provide both an informative title and a specific YouTube search query that would find an educational video teaching that exact topic.`
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
         chapters: "Array of chapters with youtube_search_query and chapter_title for each"
       }
     );
-    const imageResponse = await strict_output(
+    const imageResponse = await refined_output(
       "You are a specialist in educational content visualization",
       `Provide a precise image search term that would find a high-quality, professional image representing a course about "${title}"`,
       {

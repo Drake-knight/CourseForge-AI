@@ -1,6 +1,6 @@
 import axios from "axios";
 import { YoutubeTranscript } from "youtube-transcript";
-import { strict_output } from "./gemini";
+import { refined_output } from "./gemini";
 
 interface Question {
     question: string;
@@ -58,7 +58,7 @@ export async function getQuestionsFromTranscript(
 ): Promise<Question[]> {
   try {
 
-    const questions: Question[] = await strict_output(
+    const questions: Question[] = await refined_output(
       "You are an educational content creator specializing in creating engaging multiple-choice questions based on educational content.",
       new Array(5).fill(
         `Create a challenging multiple-choice question about "${topicTitle}" based on this content: ${transcript}`

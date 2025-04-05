@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { prisma } from "@/lib/db";
-import { strict_output } from "@/lib/gemini";
+
+import { enhanced_output } from "@/lib/enhanced-gemini";
 import {
   getTranscript,
   searchYoutube,
@@ -73,13 +74,14 @@ export async function POST(req: Request) {
     const maxLength = 500;
     transcript = transcript.split(" ").slice(0, maxLength).join(" ");
 
-    const { summary } = await strict_output(
-      "You are an educational content summarizer that creates concise, informative summaries",
-      `Create a clear, informative summary of this educational content. Keep it under 250 words, 
-       focus only on the main educational content, and avoid mentioning sponsors or tangential topics:\n${transcript}`,
-      { summary: "educational summary of the content" }
+    const { summary } = await enhanced_output(
+        "You are an educational content summarizer that creates concise, informative summaries",
+        `Create a clear, informative summary of this educational content. Keep it under 250 words, 
+         focus only on the main educational content, and avoid mentioning sponsors or tangential topics:\n${transcript}`,
+        { summary: "educational summary of the content" },
+        "", 
+        false,  
     );
-    
     // Update the chapter with video ID and summary only
     await prisma.chapter.update({
       where: { id: chapterId },
