@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI,  GenerationConfig } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerationConfig } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
@@ -6,14 +6,13 @@ interface OutputFormat {
   [key: string]: string | string[] | OutputFormat;
 }
 
-
 export async function strict_output(
   system_prompt: string,
   user_prompt: string | string[],
   output_format: OutputFormat,
   default_category: string = "",
   output_value_only: boolean = false,
-  model_name: string = "gemini-pro",
+  model_name: string = "gemini-2.0-flash",
   temperature: number = 1,
   num_tries: number = 3,
   verbose: boolean = false
@@ -36,26 +35,37 @@ export async function strict_output(
 
   for (let i = 0; i < num_tries; i++) {
     try {
-      let output_format_prompt: string = `\nYou are to output ${
-        list_output ? "an array of objects in" : ""
-      } the following json format: ${JSON.stringify(
-        output_format
-      )}. \nDo not include any markdown formatting, backticks, or json labels in your response.`;
+      let output_format_prompt: string = `\nIMPORTANT: You must respond ONLY with the exact JSON format specified below. No explanation, no conversation, no markdown.
+
+        The JSON format must be: ${JSON.stringify(output_format)}
+
+        STRICT REQUIREMENTS:
+        1. Output ONLY raw JSON with no additional text
+        2. Do not include markdown code blocks, backticks, or "json" labels
+        3. Ensure all keys match exactly as specified
+        4. Ensure all values are properly formatted strings or arrays`;
 
       if (list_output) {
-        output_format_prompt += `\nIf output field is a list, classify output into the best element of the list.`;
+        output_format_prompt += `\n5. If an output field is a list, choose the single best element from that list`;
       }
 
       if (dynamic_elements) {
-        output_format_prompt += `\nAny text enclosed by < and > indicates you must generate content to replace it. Example input: Go to <location>, Example output: Go to the garden\nAny output key containing < and > indicates you must generate the key name to replace it.`;
+        output_format_prompt += `\n6. For any text enclosed by < and >, generate appropriate content to replace it
+7. For any output key containing < and >, generate an appropriate key name to replace it`;
       }
 
       if (list_input) {
-        output_format_prompt += `\nGenerate an array of json objects, one json for each input element.`;
+        output_format_prompt += `\n8. Return an array of JSON objects, one for each input element
+9. Each JSON object must strictly follow the specified format`;
       }
 
+      output_format_prompt += `\n\nEXAMPLE OF CORRECT RESPONSE FORMAT:
+${list_input ? '[' : ''}${JSON.stringify(output_format, null, 2)}${list_input ? ']' : ''}
+
+ANY DEVIATION FROM THESE INSTRUCTIONS WILL RESULT IN FAILURE.`;
+
       const fullPrompt = system_prompt + output_format_prompt + error_msg;
-      const userContent = user_prompt.toString();
+      const userContent = Array.isArray(user_prompt) ? JSON.stringify(user_prompt) : user_prompt;
       
       if (verbose) {
         console.log("System prompt:", fullPrompt);
@@ -73,14 +83,37 @@ export async function strict_output(
       responseText = responseText
         .replace(/```json/g, '')  
         .replace(/```/g, '')      
+        .replace(/^json$/gim, '')
         .replace(/'/g, '"')       
-        .replace(/(\w)"(\w)/g, "$1'$2")  
-        .trim();                  
+        .replace(/(\w)"(\w)/g, "$1'$2")
+        .trim();
+      
+        
+
+      const firstBracketIndex = Math.min(
+        responseText.indexOf('{') >= 0 ? responseText.indexOf('{') : Infinity,
+        responseText.indexOf('[') >= 0 ? responseText.indexOf('[') : Infinity
+      );
+      
+      const lastBracketIndex = Math.max(
+        responseText.lastIndexOf('}'),
+        responseText.lastIndexOf(']')
+      );
+
+      if (firstBracketIndex !== Infinity && lastBracketIndex !== -1) {
+        responseText = responseText.substring(firstBracketIndex, lastBracketIndex + 1);
+      }
       
       if (verbose) {
         console.log("\nGemini response:", responseText);
       }
 
+      if (!responseText.startsWith('{') && !responseText.startsWith('[')) {
+        throw new Error("Response is not valid JSON format");
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      console.log(responseText);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let output: any = JSON.parse(responseText);
       
@@ -129,7 +162,7 @@ export async function strict_output(
       return list_input ? output : output[0];
       
     } catch (e) {
-      error_msg = `\n\nPrevious attempt failed with error: ${e}\nPlease ensure your response is valid JSON matching the required format exactly.`;
+      error_msg = `\n\nPrevious attempt failed with error: ${e}\nPlease ensure your response is ONLY valid JSON matching the required format exactly. No explanations, no markdown.`;
       console.log("Attempt failed:", e);
       
       if (i === num_tries - 1) {

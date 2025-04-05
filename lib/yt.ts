@@ -11,36 +11,24 @@ interface Question {
   }
   
 
-export async function searchYoutube(searchQuery: string): Promise<string | null> {
+export async function searchYoutube(searchQuery: string, maxResults: number = 5): Promise<string[]> {
   try {
-    const encodedQuery = encodeURIComponent(searchQuery);
-    
     const response = await axios.get(
-      "https://www.googleapis.com/youtube/v3/search",
-      {
-        params: {
-          key: process.env.YOUTUBE_API_KEY,
-          q: encodedQuery,
-          part: "snippet",
-          videoDuration: "medium",
-          videoEmbeddable: true,
-          type: "video",
-          maxResults: 5,
-          relevanceLanguage: "en"
-        }
-      }
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(
+        searchQuery
+      )}&key=${process.env.YOUTUBE_API_KEY}&type=video&maxResults=${maxResults}`
     );
-    
-    if (!response.data || !response.data.items || response.data.items.length === 0) {
-      console.error("YouTube API returned no results for query:", searchQuery);
-      return null;
+
+    if (response.data.items.length === 0) {
+      return [];
     }
-    
-    return response.data.items[0].id.videoId;
-    
+
+    // Return an array of video IDs
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return response.data.items.map((item: any) => item.id.videoId);
   } catch (error) {
-    console.error("YouTube search failed:", error);
-    return null;
+    console.error("Error searching YouTube:", error);
+    return [];
   }
 }
 

@@ -3,7 +3,7 @@ import React from "react";
 import { getCurrentUserSession } from "@/lib/auth";
 import SignInButton from "./SignInButton";
 import UserDropdown from "./UserDropdown";
-import { RocketIcon, UserIcon } from "lucide-react"; // Added UserIcon
+import { RocketIcon} from "lucide-react"; 
 
 interface NavbarProps {
   className?: string;

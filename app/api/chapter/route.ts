@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { prisma } from "@/lib/db";
 import { strict_output } from "@/lib/gemini";
 import {
@@ -12,6 +13,7 @@ const requestSchema = z.object({
   chapterId: z.string().min(1, "Chapter ID is required"),
 });
 
+const MAX_VIDEO_ATTEMPTS = 5;
 
 export async function POST(req: Request) {
   try {
@@ -34,19 +36,38 @@ export async function POST(req: Request) {
       }, { status: 404 });
     }
 
-    const videoId = await searchYoutube(chapter.youtubeSearchQuery);
-    if (!videoId) {
+    const videoIds = await searchYoutube(chapter.youtubeSearchQuery, MAX_VIDEO_ATTEMPTS);
+    if (!videoIds || videoIds.length === 0) {
       return NextResponse.json({
         success: false,
-        error: "Failed to find a relevant video"
+        error: "Failed to find any relevant videos"
       }, { status: 422 });
     }
 
-    let transcript = await getTranscript(videoId);
-    if (!transcript) {
+    let transcript = null;
+    let videoId = null;
+    
+    for (let i = 0; i < videoIds.length; i++) {
+      const currentVideoId = videoIds[i];
+      console.log(`Attempting video ${i+1}/${videoIds.length}, ID: ${currentVideoId}`);
+      
+      try {
+        const currentTranscript = await getTranscript(currentVideoId);
+        if (currentTranscript && currentTranscript.length > 100) { 
+          transcript = currentTranscript;
+          videoId = currentVideoId;
+          console.log(`Found valid transcript for video ID: ${videoId}`);
+          break;
+        }
+      } catch (e) {
+        console.log(`No transcript available for video ${currentVideoId}, trying next...`);
+      }
+    }
+
+    if (!transcript || !videoId) {
       return NextResponse.json({
         success: false,
-        error: "Failed to retrieve video transcript"
+        error: "Could not find any videos with valid transcripts for this topic"
       }, { status: 422 });
     }
 
@@ -95,7 +116,8 @@ export async function POST(req: Request) {
         where: { id: chapterId },
         data: {
           videoId,
-          summary,        },
+          summary,
+        },
       }),
     ]);
 

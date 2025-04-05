@@ -51,6 +51,8 @@ export async function POST(req: Request) {
     const courseImage = await getUnsplashImage(
       imageResponse.image_search_term
     );
+
+    console.log(33,courseImage)
     
     const result = await prisma.$transaction(async (tx) => {
 
@@ -73,11 +75,10 @@ export async function POST(req: Request) {
         });
         
         await tx.chapter.createMany({
-          data: unit.chapters.map((chapter, index) => ({
+          data: unit.chapters.map((chapter) => ({
             name: chapter.chapter_title,
             youtubeSearchQuery: chapter.youtube_search_query,
             unitId: createdUnit.id,
-            position: index,
           }))
         });
       }
