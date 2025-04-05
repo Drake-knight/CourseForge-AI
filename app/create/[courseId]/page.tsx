@@ -37,19 +37,23 @@ const CreateChapters = async (props: Props) => {
   }
   
   return (
-    <div className="flex flex-col items-start max-w-xl mx-auto my-16">
-      <h5 className="text-sm uppercase text-seconday-foreground/60">
-        Course Name
-      </h5>
-      <h1 className="text-5xl font-bold">{course.name}</h1>
+    <div className="bg-gradient-to-b from-purple-800 to-purple-900 p-4">
+      <div className="bg-purple-100 p-6 rounded-3xl shadow-xl mt-5">
+        <div className="flex flex-col items-start max-w-3xl mx-auto my-16">
+          <h5 className="text-sm uppercase text-seconday-foreground/60">
+            Course Name
+          </h5>
+          <h1 className="text-5xl font-bold">{course.name}</h1>
 
-      <div className="flex p-4 mt-5 border-none bg-secondary">
-        <Info className="w-12 h-12 mr-3 text-blue-400" />
-        <div>
-          Chapters for all units have been successfully generated. Kindly review them and proceed by clicking the confirmation button
+          <div className="flex p-4 mt-5 border-none bg-secondary">
+            <Info className="w-12 h-12 mr-3 text-blue-400" />
+            <div>
+              Chapters for all units have been successfully generated. Kindly review them and proceed by clicking the confirmation button
+            </div>
+          </div>
+          <GenVid course={course} />
         </div>
       </div>
-      <GenVid course={course} />
     </div>
   );
 };

@@ -28,7 +28,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user }) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          Here
+          User
         </Button>
       </DropdownMenuTrigger>
       
