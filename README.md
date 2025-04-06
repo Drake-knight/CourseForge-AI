@@ -2,19 +2,6 @@
 
 A Next.js application for AI-powered course generation developed during the Hackathon.
 
-![Alt Text](https://github.com/Drake-knight/Lightspeed-hackathon/blob/main/public/hero.png)
-
-
-
-
-![Alt Text](https://github.com/Drake-knight/Lightspeed-hackathon/blob/main/public/create.png)
-
-
-
-
-![Alt Text](https://github.com/Drake-knight/Lightspeed-hackathon/blob/main/public/course.png)
-
-
 
 ## Overview
 
