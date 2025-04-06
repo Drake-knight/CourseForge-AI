@@ -1,6 +1,6 @@
 # CourseForge AI
 
-A Next.js application for AI-powered course generation developed during the Lightspeed Hackathon.
+A Next.js application for AI-powered course generation developed during the Hackathon.
 
 ![Alt Text](https://github.com/Drake-knight/Lightspeed-hackathon/blob/main/public/hero.png)
 
