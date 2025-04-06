@@ -2,6 +2,20 @@
 
 A Next.js application for AI-powered course generation developed during the Lightspeed Hackathon.
 
+![Alt Text](https://github.com/Drake-knight/Lightspeed-hackathon/blob/main/public/hero.png)
+
+
+
+
+![Alt Text](https://github.com/Drake-knight/Lightspeed-hackathon/blob/main/public/create.png)
+
+
+
+
+![Alt Text](https://github.com/Drake-knight/Lightspeed-hackathon/blob/main/public/course.png)
+
+
+
 ## Overview
 
 CourseForge AI Course Generator leverages the Gemini AI model to automatically generate comprehensive courses based on user input. The system breaks down topics into structured units and chapters with rich content.
