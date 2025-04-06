@@ -31,20 +31,30 @@ export async function POST(req: Request) {
     }
     
     const outputUnits: UnitContent[] = await refined_output(
-      "You are an educational content creator specializing in creating structured learning courses",
+      "You are an educational content creator specializing in creating structured learning courses with clear, precise learning objectives",
       new Array(units.length).fill(
-        `Create a detailed unit for a course about "${title}". For each chapter, provide both an informative title and a specific YouTube search query that would find an educational video teaching that exact topic.`
+        `Create a detailed unit for a course about "${title}". Follow these strict guidelines:
+        1. Each unit must cover a specific subtopic within the main course subject
+        2. Each chapter title must be descriptive and specific (10 words maximum)
+        3. Each YouTube search query MUST include:
+           - The exact topic name
+           - At least one educational keyword (e.g., "tutorial", "explanation", "lecture")
+           - Be specific enough to return videos teaching exactly that concept
+           - Format: "topic + educational keyword + specificity" (e.g., "mitosis process detailed explanation biology")
+        4. Ensure logical progression from basic to advanced concepts
+        5. No generic or vague titles or search queries allowed`
       ),
       {
-        title: "Clear, concise unit title",
-        chapters: "Array of chapters with youtube_search_query and chapter_title for each"
+        title: "Clear, specific unit title that precisely describes the content (maximum 8 words)",
+        chapters: "Array of chapters with highly specific youtube_search_query and descriptive chapter_title for each"
       }
     );
     const imageResponse = await refined_output(
       "You are a specialist in educational content visualization",
-      `Provide a precise image search term that would find a high-quality, professional image representing a course about "${title}"`,
+      `Provide a precise image search term that would find a high-quality, professional image representing a course about "${title}". 
+       The search term should be specific, educational in nature, and contain 3-5 words that will yield relevant, professional results.`,
       {
-        image_search_term: "Specific, relevant image search term"
+        image_search_term: "Specific, educational, professional image search term (3-5 words)"
       }
     );
     
